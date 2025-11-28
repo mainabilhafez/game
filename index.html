@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League of Legends Post-Game Stats</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
+    h1 { text-align: center; }
+    #playerStats { margin-top: 20px; }
+    .player-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .player-card h2 { margin: 0; font-size: 24px; }
+    .player-card p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>League of Legends Post-Game Stats</h1>
+
+  <div>
+    <label for="matchId">Enter Match ID:</label>
+    <input type="text" id="matchId" placeholder="e.g., EUW1_1234567890" />
+  </div>
+  
+  <div>
+    <label for="summonerName">Enter Summoner Name:</label>
+    <input type="text" id="summonerName" placeholder="e.g., Faker" />
+  </div>
+
+  <button onclick="fetchPlayerStats()">Load Player Stats</button>
+
+  <div id="playerStats"></div>
+
+  <script>
+    async function fetchPlayerStats() {
+      const matchId = document.getElementById("matchId").value;
+      const summonerName = document.getElementById("summonerName").value;
+      
+      if (!matchId || !summonerName) {
+        alert("Please enter both Match ID and Summoner Name.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/match/${matchId}/${summonerName}`);
+        const playerStats = await response.json();
+        
+        if (playerStats.error) {
+          alert(playerStats.error);
+        } else {
+          displayPlayerStats(playerStats);
+        }
+      } catch (error) {
+        console.error("Error fetching player stats:", error);
+        alert("Failed to load player stats.");
+      }
+    }
+
+    function displayPlayerStats(stats) {
+      const statsContainer = document.getElementById("playerStats");
+
+      statsContainer.innerHTML = `
+        <div class="player-card">
+          <h2>${stats.summonerName} - ${stats.championName}</h2>
+          <p><strong>Kills:</strong> ${stats.kills}</p>
+          <p><strong>Deaths:</strong> ${stats.deaths}</p>
+          <p><strong>Assists:</strong> ${stats.assists}</p>
+          <p><strong>CS:</strong> ${stats.cs}</p>
+          <p><strong>Gold:</strong> ${stats.gold}</p>
+          <p><strong>Damage Dealt:</strong> ${stats.damageDealtToChampions}</p>
+          <p><strong>Damage Taken:</strong> ${stats.damageTaken}</p>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>
