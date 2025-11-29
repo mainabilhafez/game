@@ -15,7 +15,7 @@ const PORT = 3000;
 
 app.use(express.static(path.join(__dirname, 'www')));
 
-const RIOT_API_KEY = "RGAPI-beed8a47-b20d-41a1-8b49-f34b2cb638d0";
+const RIOT_API_KEY = "RIOT_API_KEY";
 
 // Riot regional routing (NA, EUW, etc.)
 const regionRoutes = {
@@ -111,4 +111,5 @@ async function getMatchDetails(matchId) {
 }
 
 // Run test
+
 getMatchDetails(MATCH_ID);
