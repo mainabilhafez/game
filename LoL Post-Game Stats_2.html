@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:3000/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>LoL Post-Game Stats</title>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #0b0b0d;
+      font-family: "Segoe UI", sans-serif;
+      color: #e0e0e0;
+    }
+
+    .container {
+      width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 32px;
+      color: #c9aa71;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    .player-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 25px;
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      box-shadow: 0 0 22px rgba(0,0,0,0.6);
+    }
+
+    .champion-icon {
+      width: 110px;
+      height: 110px;
+      border-radius: 14px;
+      border: 2px solid #c9aa71;
+      object-fit: cover;
+    }
+
+    .stats {
+      flex: 1;
+    }
+
+    .name {
+      font-size: 26px;
+      font-weight: bold;
+      color: #f2e6d8;
+      margin-bottom: 8px;
+    }
+
+    .champ {
+      font-size: 19px;
+      color: #c9aa71;
+      margin-bottom: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .field label {
+      color: #8c8c8c;
+      font-size: 14px;
+    }
+
+    .value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e8e8e8;
+    }
+
+    .gold { color: #f5c242; }
+    .kills { color: #4cb04f; }
+    .deaths { color: #d94848; }
+    .assists { color: #4bb2df; }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 48%;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #c9aa71;
+      border: none;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      filter: brightness(1.2);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="title">League of Legends — Post-Game Stats</h1>
+
+    <input id="matchId" type="text" placeholder="Enter Match ID (ex: EUW1_123456789)">{
+  "status": {
+    "message": "Cannot process request apikey or authorization header is empty",
+    "status_code": 401
+  }
+}</input>
+    <button onclick="fetchMatch()">Load Match</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    async function fetchMatch() {
+	
+	const matchId = document.getElementById("matchId").value;
+    if (!matchId ) {
+        alert("Please enter Match ID ");
+        return;
+      }
+      
+	     
+     const res = await fetch(`https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`);
+	   const data = await res.json();
+       
+
+	
+	  
+	   if (data) {
+          //alert(document.getElementById("matchId").value);
+		  alert(document.getElementById("matchId").textContent =
+            JSON.stringify(data, null, 2))
+        } 
+
+  const onePlayer = data.players[0]; // PICK FIRST PLAYER (or choose manually)
+	  
+      document.getElementById("output").innerHTML = `
+        <div class="player-card">
+
+          <img class="champion-icon"
+            src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/champion/${onePlayer.championName}.png"
+            onerror="this.src='https://i.imgur.com/AgxNf6r.png'"
+          >
+
+          <div class="stats">
+            <div class="name">${onePlayer.summonerName}</div>
+            <div class="champ">${onePlayer.championName}</div>
+
+            <div class="grid">
+              <div class="field">
+                <label>Gold</label>
+                <div class="value gold">${onePlayer.gold}</div>
+              </div>
+
+              <div class="field">
+                <label>Kills</label>
+                <div class="value kills">${onePlayer.kills}</div>
+              </div>
+
+              <div class="field">
+                <label>Deaths</label>
+                <div class="value deaths">${onePlayer.deaths}</div>
+              </div>
+
+              <div class="field">
+                <label>Assists</label>
+                <div class="value assists">${onePlayer.assists}</div>
+              </div>
+
+              <div class="field">
+                <label>CS</label>
+                <div class="value">${onePlayer.cs}</div>
+              </div>
+
+              <div class="field">
+                <label>Damage Dealt</label>
+                <div class="value">${onePlayer.damageDealtToChampions}</div>
+              </div>
+
+              <div class="field">
+                <label>Damage Taken</label>
+                <div class="value">${onePlayer.damageTaken}</div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+  </script>
+
+
+
+</body></html>
